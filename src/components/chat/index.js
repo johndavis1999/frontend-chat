@@ -79,7 +79,7 @@ function Chat() {
                         <Tabs/>
                       </div>
                     </div>
-                    <Content/>
+                    {/*<Content/>*/}
                   </div>
                 </div>
               </div>

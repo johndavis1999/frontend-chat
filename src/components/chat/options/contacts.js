@@ -53,7 +53,7 @@ function Contacts() {
       <p className="text-secondary mb-1">Contacts</p>
       <ul className="list-unstyled chat-list px-1">
         {contacts.map((contact) => (
-          <ContactItem contact={contact} />
+          <ContactItem contact={contact} key={contact.id_contact.id} />
         ))}
       </ul>
     </div>
