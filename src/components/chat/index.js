@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import WebSocketComponent from '../socket/WebSocket';
 import Tabs from './options/tabs';
 import Content from './content/content';
 
 function Chat() {
   return (
+    <>
+    <WebSocketComponent />
     <div className="main-wrapper">
       <div className="page-wrapper full-page">
         <div className="page-content">
@@ -85,6 +88,7 @@ function Chat() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

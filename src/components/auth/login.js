@@ -15,7 +15,7 @@ function Login() {
         setError(''); // Limpiar posibles errores previos
         try {
             const response = await axios.post(`${apiUrl}/auth/login`, { username, password });
-            saveAuthData(response.data.token, response.data.username);
+            saveAuthData(response.data.token, response.data.username, response.data.userId);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Error al iniciar sesión');
