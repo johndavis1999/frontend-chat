@@ -3,35 +3,51 @@ import Avatar from 'react-avatar';
 import { io } from 'socket.io-client';
 
 const ContactItem = ({ contact }) => {
-  const [userStatus, setUserStatus] = useState('offline');
-  const socket = React.useRef(null);
+  const [isOnline, setIsOnline] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  // Asegurándonos de que el contactId sea un string
+  const contactId = contact.id_contact.id.toString(); // Convertir el ID del contacto a string
 
   useEffect(() => {
-    // Conectar al canal único del contacto
-    const channel = `contact-${contact.id_contact.id}`;
-    socket.current = io('ws://localhost:3010', {
+    // Crear una nueva conexión WebSocket solo para verificar el estado
+    const newSocket = io('http://localhost:3010', {
       transports: ['websocket'],
-      query: { channel }, // Conecta al canal específico
     });
 
-    // Escuchar el estado del usuario
-    socket.current.on('user-status', (data) => {
-      if (data.userId === contact.id_contact.id) {
-        setUserStatus(data.status); // Actualiza el estado según el evento recibido
-      }
-    });
+    setSocket(newSocket);
 
-    // Emitir un evento para consultar el estado del usuario
-    socket.current.emit('check-user-status', { userId: contact.id_contact.id });
+    // Función para manejar la conexión inicial
+    const handleConnect = () => {
+      console.log('Conectado al servidor');
+      setIsConnected(true);
 
-    return () => {
-      // Desconectar del canal al desmontar el componente
-      if (socket.current) {
-        socket.current.disconnect();
-        socket.current = null;
+      // Iniciar el ping periódico para verificar el estado
+      const interval = setInterval(() => {
+        newSocket.emit('checkChannelStatus', { channel: contactId }); // Verificar estado cada 1 segundo
+      }, 1000);
+
+      newSocket.on('disconnect', () => clearInterval(interval));
+    };
+
+    // Función para manejar el estado del contacto
+    const handleUserStatus = (data) => {
+      if (data.channel === contactId) {
+        setIsOnline(data.isActive); // Actualizar el estado de conexión
       }
     };
-  }, [contact.id_contact.id]);
+
+    newSocket.on('connect', handleConnect);
+    newSocket.on('channelStatus', handleUserStatus); // Escuchar el estado del canal
+
+    // Limpiar la conexión y los listeners cuando el componente se desmonte
+    return () => {
+      newSocket.off('connect', handleConnect);
+      newSocket.off('channelStatus', handleUserStatus);
+      newSocket.disconnect();
+    };
+  }, [contactId]);
 
   return (
     <li className="chat-item pe-1">
@@ -39,11 +55,12 @@ const ContactItem = ({ contact }) => {
         <figure className="mb-0 me-2">
           <Avatar
             name={contact.id_contact.username}
-            size="40"
+            size="35"
             round={true}
             textSizeRatio={2}
           />
-          <div className={`status ${userStatus === 'online' ? 'online' : 'offline'}`}></div>
+          {/* Mostrar el estado en línea o desconectado */}
+          <div className={`status ${isOnline ? 'online' : 'offline'}`}></div>
         </figure>
         <div className="d-flex align-items-center justify-content-between flex-grow-1 border-bottom">
           <div>

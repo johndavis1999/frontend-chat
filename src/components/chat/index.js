@@ -4,8 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import WebSocketComponent from '../socket/WebSocket';
 import Tabs from './options/tabs';
 import Content from './content/content';
+import { useGlobalContext } from '../context/GlobalVariables';
 
 function Chat() {
+  const { username } = useGlobalContext();
   return (
     <>
     <WebSocketComponent />
@@ -27,7 +29,7 @@ function Chat() {
                                 <div className="status online"></div>
                               </figure>
                               <div>
-                                <h6>John Davis</h6>
+                                <h6>{username}</h6>
                                 <p className="text-secondary fs-13px">Estado descripción</p>
                               </div>
                             </div>
