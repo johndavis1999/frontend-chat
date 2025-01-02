@@ -1,61 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Body from './body';
+import Header from './header';
 
 function Content() {
     const { id } = useParams();
-    const [isVisible, setIsVisible] = useState(false);
+    const chatContentRef = useRef(null);
 
     useEffect(() => {
-        const chatContent = document.querySelector('.chat-content');
-
-        // Cuando cambia el id, mostrar el contenido automáticamente
+        const chatContent = chatContentRef.current;
         if (chatContent) {
-            setIsVisible(true);
-            chatContent.classList.add('show');
+            chatContent.classList.toggle('show', !!id);
         }
-
-        return () => {
-            if (chatContent) {
-                setIsVisible(false);
-                chatContent.classList.remove('show');
-            }
-        };
     }, [id]);
 
     return (
-        <div className={`chat-content ${isVisible ? 'show' : ''}`}>
-            <div className="chat-header border-bottom pb-2">
-                <div className="d-flex justify-content-between">
-                    <div className="d-flex align-items-center">
-                        <Link to={'/'}>
-                            <i className="feather icon-x icon-lg me-2 ms-n2 text-danger"></i>
-                        </Link>
-                        <figure className="mb-0 me-2">
-                            <img src="./assets/img/face2.jpg" className="img-sm rounded-circle" alt="image" />
-                            <div className="status online"></div>
-                            <div className="status online"></div>
-                        </figure>
-                        <div>
-                            <p>Mariana Zenha {id}</p>
-                            <p className="text-secondary fs-13px">Front-end Developer</p>
-                        </div>
-                    </div>
-                    <div className="d-flex align-items-center me-n1">
-                        {/*
-                        <a className="me-3" type="button" data-bs-toggle="tooltip" data-bs-title="Start video call">
-                            <i className="feather icon-video icon-lg text-secondary"></i>
-                        </a>
-                        <a className="me-0 me-sm-3" data-bs-toggle="tooltip" data-bs-title="Start voice call" type="button">
-                            <i className="feather icon-phone-call icon-lg text-secondary"></i>
-                        </a>
-                        */}
-                        <a type="button" className="d-none d-sm-block" data-bs-toggle="tooltip" data-bs-title="Add to contacts">
-                            <i className="feather icon-user-plus icon-lg text-secondary"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div ref={chatContentRef} className="chat-content">
+            <Header userId={id} />
             <Body/>
             <div className="chat-footer d-flex">
                 {/*

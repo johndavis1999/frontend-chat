@@ -3,14 +3,14 @@ import { useGlobalContext } from '../context/GlobalVariables';
 import io from 'socket.io-client';
 
 const WebSocketConnection = () => {
-  const { userId } = useGlobalContext(); // Obtener el userId del contexto global
+  const { userId, websocketUrl } = useGlobalContext(); // Obtener el userId del contexto global
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     if (userId) {
       // Crear una conexión WebSocket al servidor
-      const newSocket = io('http://localhost:3010', {
+      const newSocket = io(websocketUrl, {
         transports: ['websocket'],
       });
 

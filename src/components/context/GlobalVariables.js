@@ -6,6 +6,7 @@ const GlobalContext = createContext();
 // Componente proveedor para envolver la aplicación
 export const GlobalProvider = ({ children }) => {
   const [apiUrl] = useState(process.env.REACT_APP_API_URL); // Leer desde .env
+  const [websocketUrl] = useState(process.env.REACT_APP_WEBSOCKET_URL);
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken') || null);
   const [username, setUsername] = useState(localStorage.getItem('username') || null);
   const [userId, serUserId] = useState(localStorage.getItem('userId') || null);
@@ -31,7 +32,7 @@ export const GlobalProvider = ({ children }) => {
   };
 
   return (
-    <GlobalContext.Provider value={{ apiUrl, authToken, username, userId, saveAuthData, clearAuthData }}>
+    <GlobalContext.Provider value={{ apiUrl, authToken, username, userId, saveAuthData, clearAuthData, websocketUrl }}>
       {children}
     </GlobalContext.Provider>
   );
