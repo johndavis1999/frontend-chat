@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from 'react-avatar';
+import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
 const ContactItem = ({ contact }) => {
@@ -51,7 +52,7 @@ const ContactItem = ({ contact }) => {
 
   return (
     <li className="chat-item pe-1">
-      <a href="#" className="d-flex align-items-center">
+      <Link to={`/chat/${contact.id}`} className="d-flex align-items-center">
         <figure className="mb-0 me-2">
           <Avatar
             name={contact.id_contact.username}
@@ -73,7 +74,7 @@ const ContactItem = ({ contact }) => {
             <i className="feather icon-message-square text-primary icon-md me-2"></i>
           </div>
         </div>
-      </a>
+      </Link>
     </li>
   );
 };

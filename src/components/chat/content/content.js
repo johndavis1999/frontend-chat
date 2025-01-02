@@ -1,43 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Body from './body';
 
 function Content() {
+    const { id } = useParams();
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Obtener el botón para volver a la lista de chats
-        const backToChatListButton = document.querySelector('#backToChatList');
         const chatContent = document.querySelector('.chat-content');
 
-        // Añadir el evento de clic al botón
-        const handleBackToChatListClick = () => {
+        // Cuando cambia el id, mostrar el contenido automáticamente
         if (chatContent) {
-            chatContent.classList.toggle('show');
+            setIsVisible(true);
+            chatContent.classList.add('show');
         }
-        };
 
-        backToChatListButton.addEventListener('click', handleBackToChatListClick);
-
-        // Limpiar el evento cuando el componente se desmonte
         return () => {
-        backToChatListButton.removeEventListener('click', handleBackToChatListClick);
+            if (chatContent) {
+                setIsVisible(false);
+                chatContent.classList.remove('show');
+            }
         };
-    }, []);
+    }, [id]);
 
     return (
-        <div className="col-lg-8 chat-content">
+        <div className={`chat-content ${isVisible ? 'show' : ''}`}>
             <div className="chat-header border-bottom pb-2">
                 <div className="d-flex justify-content-between">
                     <div className="d-flex align-items-center">
-                        <a type="button" id="backToChatList">
-                            <i className="feather icon-corner-up-left icon-lg me-2 ms-n2 text-secondary d-lg-none"></i>
-                        </a>
+                        <Link to={'/'}>
+                            <i className="feather icon-x icon-lg me-2 ms-n2 text-danger"></i>
+                        </Link>
                         <figure className="mb-0 me-2">
                             <img src="./assets/img/face2.jpg" className="img-sm rounded-circle" alt="image" />
                             <div className="status online"></div>
                             <div className="status online"></div>
                         </figure>
                         <div>
-                            <p>Mariana Zenha</p>
+                            <p>Mariana Zenha {id}</p>
                             <p className="text-secondary fs-13px">Front-end Developer</p>
                         </div>
                     </div>
